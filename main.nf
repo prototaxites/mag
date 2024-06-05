@@ -46,20 +46,13 @@ include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_mag_
 workflow NFCORE_MAG {
 
     take:
-        raw_short_reads  // channel: samplesheet read in from --input
-        raw_long_reads
-        input_assemblies
 
     main:
 
     //
     // WORKFLOW: Run pipeline
     //
-    MAG (
-        raw_short_reads,  // channel: samplesheet read in from --input
-        raw_long_reads,
-        input_assemblies
-    )
+    MAG ()
 
     emit:
     multiqc_report = MAG.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -91,24 +84,20 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_MAG (
-        PIPELINE_INITIALISATION.out.raw_short_reads,
-        PIPELINE_INITIALISATION.out.raw_long_reads,
-        PIPELINE_INITIALISATION.out.input_assemblies
-    )
+    NFCORE_MAG ()
 
     //
     // SUBWORKFLOW: Run completion tasks
     //
-    PIPELINE_COMPLETION (
-        params.email,
-        params.email_on_fail,
-        params.plaintext_email,
-        params.outdir,
-        params.monochrome_logs,
-        params.hook_url,
-        NFCORE_MAG.out.multiqc_report
-    )
+//     PIPELINE_COMPLETION (
+//         params.email,
+//         params.email_on_fail,
+//         params.plaintext_email,
+//         params.outdir,
+//         params.monochrome_logs,
+//         params.hook_url,
+//         NFCORE_MAG.out.multiqc_report
+//     )
 }
 
 /*

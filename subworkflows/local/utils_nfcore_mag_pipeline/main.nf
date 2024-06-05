@@ -82,88 +82,88 @@ workflow PIPELINE_INITIALISATION {
     //
 
     // Validate FASTQ input
-    ch_samplesheet = Channel
-        .fromSamplesheet("input")
-        .map {
-            validateInputSamplesheet(it[0], it[1], it[2], it[3])
-        }
+    // ch_samplesheet = Channel
+    //     .fromSamplesheet("input")
+    //     .map {
+    //         validateInputSamplesheet(it[0], it[1], it[2], it[3])
+    //     }
 
-    // Prepare FASTQs channel and separate short and long reads and prepare
-    ch_raw_short_reads = ch_samplesheet
-        .map { meta, sr1, sr2, lr ->
-                    meta.run          = meta.run == null ? "0" : meta.run
-                    meta.single_end   = params.single_end
+    // // Prepare FASTQs channel and separate short and long reads and prepare
+    // ch_raw_short_reads = ch_samplesheet
+    //     .map { meta, sr1, sr2, lr ->
+    //                 meta.run          = meta.run == null ? "0" : meta.run
+    //                 meta.single_end   = params.single_end
 
-                    if (params.single_end) {
-                        return [ meta, [ sr1 ] ]
-                    } else {
-                        return [ meta, [ sr1, sr2 ] ]
-                    }
-            }
+    //                 if (params.single_end) {
+    //                     return [ meta, [ sr1 ] ]
+    //                 } else {
+    //                     return [ meta, [ sr1, sr2 ] ]
+    //                 }
+    //         }
 
-    ch_raw_long_reads = ch_samplesheet
-        .map { meta, sr1, sr2, lr ->
-                    if (lr) {
-                        meta.run          = meta.run == null ? "0" : meta.run
-                        return [ meta, lr ]
-                    }
-            }
+    // ch_raw_long_reads = ch_samplesheet
+    //     .map { meta, sr1, sr2, lr ->
+    //                 if (lr) {
+    //                     meta.run          = meta.run == null ? "0" : meta.run
+    //                     return [ meta, lr ]
+    //                 }
+    //         }
 
-    // Check already if long reads are provided, for later parameter validation
-    def hybrid =false
-    ch_raw_long_reads.map{if (it) hybrid = true}
+    // // Check already if long reads are provided, for later parameter validation
+    // def hybrid =false
+    // ch_raw_long_reads.map{if (it) hybrid = true}
 
-    //
-    // Custom validation for pipeline parameters
-    //
-    validateInputParameters(
-        hybrid
-    )
+    // //
+    // // Custom validation for pipeline parameters
+    // //
+    // validateInputParameters(
+    //     hybrid
+    // )
 
-    // Validate PRE-ASSEMBLED CONTIG input when supplied
-    if (params.assembly_input) {
-        ch_input_assemblies = Channel
-            .fromSamplesheet("assembly_input")
-    }
+    // // Validate PRE-ASSEMBLED CONTIG input when supplied
+    // if (params.assembly_input) {
+    //     ch_input_assemblies = Channel
+    //         .fromSamplesheet("assembly_input")
+    // }
 
-    // Prepare ASSEMBLY input channel
-    if (params.assembly_input) {
-        ch_input_assemblies
-            .map { meta, fasta ->
-                    return [ meta + [id: params.coassemble_group ? "group-${meta.group}" : meta.id], [ fasta ] ]
-                }
-    } else {
-        ch_input_assemblies    = Channel.empty()
-    }
+    // // Prepare ASSEMBLY input channel
+    // if (params.assembly_input) {
+    //     ch_input_assemblies
+    //         .map { meta, fasta ->
+    //                 return [ meta + [id: params.coassemble_group ? "group-${meta.group}" : meta.id], [ fasta ] ]
+    //             }
+    // } else {
+    //     ch_input_assemblies    = Channel.empty()
+    // }
 
-    // Cross validation of input assembly and read IDs: ensure groups are all represented between reads and assemblies
-    if (params.assembly_input) {
-        ch_read_ids = ch_samplesheet
-            .map { meta, sr1, sr2, lr -> params.coassemble_group ? meta.group : meta.id }
-            .unique()
-            .toList()
-            .sort()
+    // // Cross validation of input assembly and read IDs: ensure groups are all represented between reads and assemblies
+    // if (params.assembly_input) {
+    //     ch_read_ids = ch_samplesheet
+    //         .map { meta, sr1, sr2, lr -> params.coassemble_group ? meta.group : meta.id }
+    //         .unique()
+    //         .toList()
+    //         .sort()
 
-        ch_assembly_ids = ch_input_assemblies
-            .map { meta, fasta -> params.coassemble_group ? meta.group : meta.id }
-            .unique()
-            .toList()
-            .sort()
+    //     ch_assembly_ids = ch_input_assemblies
+    //         .map { meta, fasta -> params.coassemble_group ? meta.group : meta.id }
+    //         .unique()
+    //         .toList()
+    //         .sort()
 
-        ch_read_ids.cross(ch_assembly_ids)
-            .map { ids1, ids2 ->
-                if (ids1.sort() != ids2.sort()) {
-                    exit 1, "[nf-core/mag] ERROR: supplied IDs or Groups in read and assembly CSV files do not match!"
-                }
-            }
-    }
+    //     ch_read_ids.cross(ch_assembly_ids)
+    //         .map { ids1, ids2 ->
+    //             if (ids1.sort() != ids2.sort()) {
+    //                 exit 1, "[nf-core/mag] ERROR: supplied IDs or Groups in read and assembly CSV files do not match!"
+    //             }
+    //         }
+    // }
 
 
 
     emit:
-    raw_short_reads  = ch_raw_short_reads
-    raw_long_reads   = ch_raw_long_reads
-    input_assemblies = ch_input_assemblies
+    // raw_short_reads  = ch_raw_short_reads
+    // raw_long_reads   = ch_raw_long_reads
+    // input_assemblies = ch_input_assemblies
     versions    = ch_versions
 }
 
