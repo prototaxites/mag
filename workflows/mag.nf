@@ -195,6 +195,16 @@ workflow MAG {
     * Bin QC subworkflows: for checking bin completeness with either BUSCO, CHECKM, and/or GUNC
     */
 
+    ch_input_bins_for_qc = Channel.fromPath("${params.binput_dir}/*.fna")
+        | map { bin ->
+            def id = bin.getSimpleName()
+            def group = "binput"
+            def assembler = "Unknown"
+            def domain = "Unclassified"
+            def meta = [id: id, group: group, assembler: assembler, domain: domain]
+            [ meta, bin ]
+        }
+
     ch_input_bins_for_qc = ch_input_for_postbinning_bins_unbins.transpose()
 
     if (!params.skip_binqc && params.binqc_tool == 'busco'){
