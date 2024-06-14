@@ -195,12 +195,14 @@ workflow MAG {
     * Bin QC subworkflows: for checking bin completeness with either BUSCO, CHECKM, and/or GUNC
     */
 
-    ch_input_bins_for_qc = Channel.fromPath("${params.binput_dir}/*.fna")
+    ch_input_for_postbinning_bins_unbins = Channel.fromPath("${params.binput_dir}/*.fna")
         | map { bin ->
+            def id = "binput"
             def group = "binput"
             def assembler = "Unknown"
             def domain = "Unclassified"
-            def meta = [group: group, assembler: assembler, domain: domain]
+            def binner = "binput"
+            def meta = [id: id, group: group, assembler: assembler, domain: domain, binner: binner]
             [ meta, bin ]
         }
         | groupTuple(by: 0)
