@@ -54,9 +54,6 @@ workflow NFCORE_MAG {
     //
     MAG ()
 
-    emit:
-    multiqc_report = MAG.out.multiqc_report // channel: /path/to/multiqc_report.html
-
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
