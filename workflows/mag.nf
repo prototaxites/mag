@@ -343,17 +343,6 @@ workflow MAG {
         ch_gtdbtk_summary = Channel.empty()
     }
 
-    if ( ( !params.skip_binqc ) || !params.skip_quast || !params.skip_gtdbtk){
-        BIN_SUMMARY (
-            ch_input_for_binsummary,
-            ch_busco_summary.ifEmpty([]),
-            ch_checkm_summary.ifEmpty([]),
-            ch_quast_bins_summary.ifEmpty([]),
-            ch_gtdbtk_summary.ifEmpty([]),
-            ch_cat_global_summary.ifEmpty([])
-        )
-    }
-
     /*
         * Prokka: Genome annotation
         */
