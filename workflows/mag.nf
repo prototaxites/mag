@@ -197,11 +197,10 @@ workflow MAG {
 
     ch_input_bins_for_qc = Channel.fromPath("${params.binput_dir}/*.fna")
         | map { bin ->
-            def id = bin.getSimpleName()
             def group = "binput"
             def assembler = "Unknown"
             def domain = "Unclassified"
-            def meta = [id: id, group: group, assembler: assembler, domain: domain]
+            def meta = [group: group, assembler: assembler, domain: domain]
             [ meta, bin ]
         }
         | groupTuple(by: 0)
