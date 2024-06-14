@@ -204,6 +204,7 @@ workflow MAG {
             def meta = [id: id, group: group, assembler: assembler, domain: domain]
             [ meta, bin ]
         }
+        | groupTuple(by: 0)
 
     ch_input_bins_for_qc = ch_input_for_postbinning_bins_unbins.transpose()
 
